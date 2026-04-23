@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Create Item</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    * { font-family: 'Inter', sans-serif; }
+    textarea:focus, input:focus { outline: none; }
+    .status-pill { background-color: #fde8e8; color: #e53e3e; }
+
+    /* Toggle switch */
+    .toggle {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      width: 44px;
+      height: 26px;
+      flex-shrink: 0;
+    }
+    .toggle input { opacity: 0; width: 0; height: 0; position: absolute; }
+    .toggle-track {
+      width: 44px;
+      height: 26px;
+      background-color: #d1d5db;
+      border-radius: 9999px;
+      transition: background-color 0.2s;
+      position: relative;
+      cursor: pointer;
+    }
+    .toggle input:checked + .toggle-track { background-color: #6b7280; }
+    .toggle-track::after {
+      content: '';
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 20px;
+      height: 20px;
+      background: white;
+      border-radius: 9999px;
+      transition: transform 0.2s;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+    .toggle input:checked + .toggle-track::after { transform: translateX(18px); }
+  </style>
+</head>
+<body class="bg-white min-h-screen">
+
+  <!-- Top Bar -->
+  <div class="flex items-center justify-between px-4 sm:px-6 py-3 border-b border-gray-200 sticky top-0 bg-white z-10">
+    <!-- X Button -->
+    <button class="w-9 h-9 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 transition">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+      </svg>
+    </button>
+    <!-- Save Button -->
+    <button class="bg-gray-900 text-white text-sm font-semibold px-5 py-2 rounded-full hover:bg-gray-700 transition">
+      Save
+    </button>
+  </div>
+
+  <!-- Main Content -->
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+
+    <!-- Heading + Feedback -->
+    <div class="flex items-center justify-between mb-6">
+      <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">Create item</h1>
+      <a href="#" class="flex items-center gap-1.5 text-sm text-gray-600 underline underline-offset-2 hover:text-gray-900 transition">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+        </svg>
+        Provide feedback
+      </a>
+    </div>
+
+    <!-- Two-column layout -->
+    <div class="flex flex-col lg:flex-row gap-6">
+
+      <!-- Left Column -->
+      <div class="flex-1 flex flex-col gap-4">
+
+        <!-- Item Type -->
+        <div class="border border-gray-200 rounded-xl px-4 py-3 focus-within:border-gray-400 transition">
+          <div class="flex items-center gap-3">
+            <!-- Fork/knife icon -->
+            <div class="flex-shrink-0 w-8 h-8 flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 3v6c0 1.657 1.343 3 3 3s3-1.343 3-3V3M6 12v9M15 3c0 0 3 2 3 6s-3 6-3 6v6"/>
+              </svg>
+            </div>
+            <div class="flex-1">
+              <p class="text-xs text-gray-500 font-medium">Item type</p>
+              <select class="w-full text-sm text-gray-900 bg-transparent border-none focus:ring-0">
+                <option value="prepared-food-beverage" selected>Prepared food and beverage</option>
+                <option value="food">Food</option>
+                <option value="beverage">Beverage</option>
+                <option value="merchandise">Merchandise</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Name -->
+        <div class="border border-gray-200 rounded-xl px-4 py-3 flex items-center gap-3 focus-within:border-gray-400 transition">
+          <input
+            type="text"
+            placeholder="Name (required)"
+            class="flex-1 text-sm text-gray-700 placeholder-gray-400 bg-transparent border-none focus:ring-0"
+          />
+          <div class="flex items-center gap-2 flex-shrink-0">
+            <!-- Barcode icon -->
+            <button class="text-gray-400 hover:text-gray-600 transition">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 7V5a2 2 0 012-2h2M17 3h2a2 2 0 012 2v2M21 17v2a2 2 0 01-2 2h-2M7 21H5a2 2 0 01-2-2v-2"/>
+                <line x1="7" y1="8" x2="7" y2="16" stroke-width="2"/>
+                <line x1="10" y1="8" x2="10" y2="16" stroke-width="2"/>
+                <line x1="13" y1="8" x2="13" y2="16" stroke-width="2"/>
+                <line x1="16" y1="8" x2="16" y2="16" stroke-width="2"/>
+              </svg>
+            </button>
+            <!-- Three dots -->
+            <button class="text-gray-400 hover:text-gray-600 transition">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Kitchen Name -->
+        <div class="border border-gray-200 rounded-xl px-4 py-3 flex items-center gap-3 focus-within:border-gray-400 transition">
+          <input
+            type="text"
+            placeholder="Kitchen name"
+            class="flex-1 text-sm text-gray-700 placeholder-gray-400 bg-transparent border-none focus:ring-0"
+          />
+          <button class="text-gray-400 hover:text-gray-600 transition flex-shrink-0">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+              <circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="12"/><circle cx="12" cy="16" r="0.5" fill="currentColor"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Price -->
+        <div class="border border-gray-200 rounded-xl px-4 py-3 flex items-center gap-3 focus-within:border-gray-400 transition">
+          <input
+            type="text"
+            placeholder="Price"
+            class="flex-1 text-sm text-gray-700 placeholder-gray-400 bg-transparent border-none focus:ring-0"
+          />
+          <div class="flex items-center gap-2 flex-shrink-0">
+            <!-- ea dropdown -->
+            <button class="flex items-center gap-1 text-sm text-gray-600 hover:text-gray-800 transition">
+              <span class="font-medium">ea</span>
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+              </svg>
+            </button>
+            <!-- Three dots -->
+            <button class="text-gray-400 hover:text-gray-600 transition">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Add unit cost pill -->
+        <div>
+          <button class="bg-gray-100 text-gray-600 text-xs font-medium px-4 py-2 rounded-full hover:bg-gray-200 transition">
+            Add unit cost to see margins
+          </button>
+        </div>
+
+        <!-- Customer-facing description -->
+        <div class="border border-gray-200 rounded-xl px-4 py-3 focus-within:border-gray-400 transition">
+          <textarea
+            placeholder="Customer-facing description"
+            rows="4"
+            class="w-full text-sm text-gray-700 placeholder-gray-400 bg-transparent border-none resize-none focus:ring-0"
+          ></textarea>
+        </div>
+
+      </div>
+
+      <!-- Right Column -->
+      <div class="w-full lg:w-72 xl:w-80 flex flex-col gap-4">
+
+        <!-- Status Card -->
+        <div class="border border-gray-200 rounded-xl p-4">
+          <div class="flex items-center justify-between">
+            <span class="text-base font-semibold text-gray-900">Status</span>
+            <button class="flex items-center gap-1.5 bg-red-100 text-red-500 text-sm font-medium px-3 py-1.5 rounded-full hover:bg-red-200 transition">
+              Sold out
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Categories Card -->
+        <div class="border border-gray-200 rounded-xl p-4">
+          <h3 class="text-base font-semibold text-gray-900 mb-2">Categories</h3>
+          <p class="text-xs text-gray-500 leading-relaxed mb-4">
+            For printer routing and sales reporting, and for selling items on retail online sites and non-restaurant POS modes (Standard, Retail, Bookings, Services).
+          </p>
+          <div class="border border-gray-200 rounded-xl flex items-center gap-2 px-3 py-2.5 hover:border-gray-400 transition cursor-pointer">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"/><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35"/>
+            </svg>
+            <span class="text-sm text-gray-400">Add to categories</span>
+          </div>
+        </div>
+
+        <!-- Menus Card -->
+        <div class="border border-gray-200 rounded-xl p-4">
+          <h3 class="text-base font-semibold text-gray-900 mb-2">Menus</h3>
+          <p class="text-xs text-gray-500 leading-relaxed mb-4">
+            For online ordering sites, delivery apps, kiosks, and any restaurant POS modes.
+          </p>
+          <div class="border border-gray-200 rounded-xl flex items-center gap-2 px-3 py-2.5 hover:border-gray-400 transition cursor-pointer">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"/><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35"/>
+            </svg>
+            <span class="text-sm text-gray-400">Add to menus</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 py-6">
+
+    <!-- Two-column layout -->
+    <div class="flex flex-col lg:flex-row gap-6">
+
+      <!-- LEFT COLUMN -->
+      <div class="flex-1 flex flex-col gap-0">
+
+        <!-- Image Upload Box -->
+        <div class="border border-dashed border-gray-300 rounded-xl flex flex-col items-center justify-center py-10 px-6 mb-6 cursor-pointer hover:bg-gray-50 transition">
+          <!-- Upload icon -->
+          <div class="mb-3 text-gray-500">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+              <circle cx="8.5" cy="8.5" r="1.5"/>
+              <polyline points="21 15 16 10 5 21"/>
+              <line x1="14" y1="3" x2="14" y2="7" stroke-width="2"/>
+              <line x1="12" y1="3" x2="16" y2="3" stroke-width="2"/>
+            </svg>
+          </div>
+          <p class="text-sm text-gray-600 text-center">
+            Drop images here,
+            <a href="#" class="underline underline-offset-2 text-gray-900 font-medium hover:text-black">browse files</a>,
+            or
+            <a href="#" class="underline underline-offset-2 text-gray-900 font-medium hover:text-black">add from image library</a>
+          </p>
+        </div>
+
+        <!-- Taxes Row -->
+        <div class="flex items-start justify-between py-4 border-b border-gray-100">
+          <div>
+            <p class="text-sm font-semibold text-gray-900">Taxes</p>
+            <p class="text-xs text-gray-500 mt-0.5">GST (5%)</p>
+          </div>
+          <button class="text-sm font-medium text-gray-700 underline underline-offset-2 hover:text-black transition">Edit</button>
+        </div>
+
+        <!-- Nutritional Information Row -->
+        <div class="flex items-start justify-between py-4 border-b border-gray-200">
+          <div>
+            <p class="text-sm font-semibold text-gray-900">Nutritional information</p>
+            <p class="text-xs text-gray-500 mt-0.5">Calorie count, dietary preferences, and food allergens.</p>
+          </div>
+          <button class="text-gray-500 hover:text-gray-700 transition mt-0.5 flex-shrink-0 ml-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Divider -->
+        <div class="border-t border-gray-200 my-4"></div>
+
+        <!-- Manage Inventory -->
+        <div class="mb-4">
+          <h2 class="text-lg font-bold text-gray-900 mb-4">Manage inventory</h2>
+
+          <!-- Table -->
+          <div class="w-full">
+            <!-- Table Header -->
+            <div class="grid grid-cols-[1fr_auto_auto] sm:grid-cols-[1fr_160px_160px] gap-0 border-b border-gray-200 pb-2 mb-0">
+              <p class="text-xs text-gray-500 font-medium">Location</p>
+              <p class="text-xs text-gray-500 font-medium text-right sm:text-left pl-2 sm:pl-0">Set initial stock</p>
+              <p class="text-xs text-gray-500 font-medium text-right sm:text-left pl-2 sm:pl-0">Low stock alert</p>
+            </div>
+
+            <!-- Table Row -->
+            <div class="grid grid-cols-[1fr_auto_auto] sm:grid-cols-[1fr_160px_160px] gap-2 items-center py-3 border-b border-gray-100">
+              <p class="text-sm text-gray-900 font-medium">Tango</p>
+
+              <!-- Set initial stock input -->
+              <input
+                type="number"
+                value="0"
+                class="border border-gray-200 rounded-lg text-sm text-gray-700 text-right px-3 py-2 w-24 sm:w-full focus:border-gray-400 transition bg-white"
+              />
+
+              <!-- Low stock alert input + three dots -->
+              <div class="flex items-center gap-2">
+                <input
+                  type="text"
+                  placeholder="Not set"
+                  class="border border-gray-200 rounded-lg text-sm text-gray-400 placeholder-gray-400 px-3 py-2 w-24 sm:w-full focus:border-gray-400 transition bg-white"
+                />
+                <button class="text-gray-400 hover:text-gray-600 transition flex-shrink-0">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- SKU + GTIN inputs -->
+          <div class="flex flex-col sm:flex-row gap-3 mt-4">
+            <!-- SKU -->
+            <div class="flex-1 border border-gray-200 rounded-xl flex items-center px-4 py-3 gap-3 focus-within:border-gray-400 transition">
+              <input
+                type="text"
+                placeholder="SKU"
+                class="flex-1 text-sm text-gray-700 placeholder-gray-400 bg-transparent border-none focus:ring-0"
+              />
+              <button class="text-gray-400 hover:text-gray-600 transition flex-shrink-0">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                  <circle cx="12" cy="12" r="9"/>
+                  <line x1="12" y1="8" x2="12" y2="12"/>
+                  <circle cx="12" cy="16" r="0.6" fill="currentColor"/>
+                </svg>
+              </button>
+            </div>
+            <!-- GTIN -->
+            <div class="flex-1 border border-gray-200 rounded-xl flex items-center px-4 py-3 gap-3 focus-within:border-gray-400 transition">
+              <input
+                type="text"
+                placeholder="GTIN"
+                class="flex-1 text-sm text-gray-700 placeholder-gray-400 bg-transparent border-none focus:ring-0"
+              />
+              <button class="text-gray-400 hover:text-gray-600 transition flex-shrink-0">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                  <circle cx="12" cy="12" r="9"/>
+                  <line x1="12" y1="8" x2="12" y2="12"/>
+                  <circle cx="12" cy="16" r="0.6" fill="currentColor"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Divider -->
+        <div class="border-t border-gray-200 my-4"></div>
+
+        <!-- Variations -->
+        <div class="flex items-start justify-between">
+          <div>
+            <h2 class="text-lg font-bold text-gray-900">Variations</h2>
+            <p class="text-xs text-gray-500 mt-0.5">Add options like portions or sizes, then set prices and availability.</p>
+          </div>
+          <button class="bg-gray-100 text-gray-800 text-sm font-semibold px-5 py-2 rounded-full hover:bg-gray-200 transition flex-shrink-0 ml-4">
+            Add
+          </button>
+        </div>
+
+      <!-- Modifiers -->
+      <div class="flex items-start justify-between py-5 border-b border-gray-100">
+        <div>
+          <p class="text-base font-bold text-gray-900">Modifiers</p>
+          <p class="text-xs text-gray-500 mt-0.5">
+            Allow customizations such as toppings, sides, or special requests.
+            <a href="#" class="underline underline-offset-2 text-gray-700 hover:text-black font-medium">Learn more</a>
+          </p>
+        </div>
+        <button class="bg-gray-100 text-gray-800 text-sm font-semibold px-5 py-2 rounded-full hover:bg-gray-200 transition flex-shrink-0 ml-4">
+          Add
+        </button>
+      </div>
+
+      <!-- Custom attributes -->
+      <div class="flex items-start justify-between py-5 border-b border-gray-100">
+        <div>
+          <p class="text-base font-bold text-gray-900">Custom attributes</p>
+          <p class="text-xs text-gray-500 mt-0.5">
+            Track additional details for this item.
+            <a href="#" class="underline underline-offset-2 text-gray-700 hover:text-black font-medium">Learn more</a>
+          </p>
+        </div>
+        <button class="bg-gray-100 text-gray-800 text-sm font-semibold px-5 py-2 rounded-full hover:bg-gray-200 transition flex-shrink-0 ml-4">
+          Add
+        </button>
+      </div>
+
+      <!-- Divider -->
+      <div class="border-t border-gray-200 my-6"></div>
+
+      <!-- Manage Checkout Section Header -->
+      <div class="flex items-center justify-between mb-5">
+        <div class="flex items-center gap-3">
+          <!-- Receipt/list icon -->
+          <div class="w-9 h-9 border border-gray-300 rounded-lg flex items-center justify-center flex-shrink-0">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/>
+              <rect x="9" y="3" width="6" height="4" rx="1"/>
+              <line x1="9" y1="12" x2="15" y2="12"/>
+              <line x1="9" y1="16" x2="13" y2="16"/>
+            </svg>
+          </div>
+          <h2 class="text-lg font-bold text-gray-900">Manage checkout</h2>
+        </div>
+        <button class="text-gray-500 hover:text-gray-700 transition">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Info Banner -->
+      <div class="flex items-start gap-3 bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 mb-6">
+        <div class="flex-shrink-0 mt-0.5">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+            <circle cx="12" cy="12" r="9"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <circle cx="12" cy="16" r="0.6" fill="currentColor"/>
+          </svg>
+        </div>
+        <p class="text-sm text-gray-700 flex-1 leading-relaxed">
+          Create and manage payment links in
+          <a href="#" class="underline underline-offset-2 text-gray-900 font-medium hover:text-black">Payments &amp; invoices &gt; Payment links</a>.
+          Once links are created, you can copy the link from your Item Library.
+        </p>
+        <button class="flex-shrink-0 text-gray-400 hover:text-gray-700 transition ml-2 mt-0.5">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- This item cannot be purchased on its own -->
+      <div class="flex items-start justify-between py-4 border-b border-gray-100">
+        <div class="flex-1 pr-6">
+          <p class="text-sm font-semibold text-gray-900">This item cannot be purchased on its own</p>
+          <p class="text-xs text-gray-500 mt-0.5">
+            Recommended for tracking internal costs such as packing materials.
+            <a href="#" class="underline underline-offset-2 text-gray-600 hover:text-black font-medium">Learn more</a>
+          </p>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" />
+          <div class="toggle-track"></div>
+        </label>
+      </div>
+
+      <!-- Point of sale label -->
+      <div class="pt-5 pb-3">
+        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Point of sale</p>
+      </div>
+
+      <!-- Skip item details screen -->
+      <div class="flex items-start justify-between py-4 border-b border-gray-100">
+        <div class="flex-1 pr-6">
+          <p class="text-sm font-semibold text-gray-900">Skip item details screen</p>
+          <p class="text-xs text-gray-500 mt-0.5">
+            When this item is added to the cart, the first item variation along with any pre-selected modifiers will be applied.
+          </p>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" />
+          <div class="toggle-track"></div>
+        </label>
+      </div>
+
+      <!-- Divider -->
+      <div class="border-t border-gray-200 my-6"></div>
+
+      <!-- ================================================================
+     FULFILL ORDERS + OPTIMIZE SEARCH & SHARING — Drop-in Section
+     Requires: Tailwind CSS loaded in your project
+     ================================================================ -->
+
+<div class="w-full max-w-5xl mx-auto py-6 bg-white">
+
+  <!-- ── FULFILL ORDERS ─────────────────────────────────────────── -->
+  <div>
+
+    <!-- Header row -->
+    <div class="flex items-center justify-between py-3 border-b border-gray-200 cursor-pointer select-none"
+         onclick="toggleSection('fulfill', this)">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center flex-shrink-0">
+          <!-- Box / package icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-700" fill="none"
+               viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10"/>
+          </svg>
+        </div>
+        <span class="text-[17px] font-bold text-gray-900 tracking-tight">Fulfill orders</span>
+      </div>
+      <!-- Chevron — starts pointing UP (section open) -->
+      <svg id="fulfill-chevron" xmlns="http://www.w3.org/2000/svg"
+           class="w-5 h-5 text-gray-600 transition-transform duration-200"
+           fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/>
+      </svg>
+    </div>
+
+    <!-- Collapsible body -->
+    <div id="fulfill-body">
+
+      <!-- Item prep time -->
+      <div class="flex items-center justify-between py-5 border-b border-gray-200">
+        <div>
+          <p class="text-[14px] font-semibold text-gray-900">Item prep time</p>
+          <p class="text-[13px] text-gray-500 mt-0.5">Based on location default</p>
+        </div>
+        <button class="text-[13px] font-semibold text-gray-900 underline underline-offset-2
+                       hover:opacity-60 transition-opacity flex-shrink-0 ml-8">Edit</button>
+      </div>
+
+      <!-- Online fulfillment methods -->
+      <div class="flex items-center justify-between py-5 border-b border-gray-200">
+        <div>
+          <p class="text-[14px] font-semibold text-gray-900">Online fulfillment methods</p>
+          <p class="text-[13px] text-gray-500 mt-0.5">Shipping</p>
+        </div>
+        <button class="text-[13px] font-semibold text-gray-900 underline underline-offset-2
+                       hover:opacity-60 transition-opacity flex-shrink-0 ml-8">Edit</button>
+      </div>
+
+      <!-- Shipping box -->
+      <div class="flex items-start justify-between py-5 border-b border-gray-200">
+        <div class="flex-1 pr-12">
+          <p class="text-[14px] font-semibold text-gray-900">Shipping box</p>
+          <p class="text-[13px] text-gray-500 mt-0.5 leading-relaxed">
+            Add the box that this item will ship in to get real time shipping rates calculated at checkout.
+          </p>
+        </div>
+        <button class="text-[13px] font-semibold text-gray-900 underline underline-offset-2
+                       hover:opacity-60 transition-opacity flex-shrink-0">Add</button>
+      </div>
+
+      <!-- Item contains alcohol -->
+      <div class="flex items-start justify-between py-5 border-b border-gray-200">
+        <div class="flex-1 pr-12">
+          <p class="text-[14px] font-semibold text-gray-900">Item contains alcohol</p>
+          <p class="text-[13px] text-gray-500 mt-0.5 leading-relaxed">
+            Require ID on delivery and set alcohol limits for QR code orders.
+            <a href="#" class="underline underline-offset-2 text-gray-700 font-medium hover:opacity-60">Learn more</a>
+          </p>
+        </div>
+        <!-- Toggle switch (off by default) -->
+        <button id="alcohol-btn" role="switch" aria-checked="false"
+                onclick="toggleSwitch('alcohol-btn','alcohol-dot')"
+                class="relative flex-shrink-0 mt-0.5 w-12 h-6 rounded-full bg-gray-300
+                       transition-colors duration-200 focus:outline-none focus-visible:ring-2
+                       focus-visible:ring-offset-2 focus-visible:ring-gray-500">
+          <span id="alcohol-dot"
+                class="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow
+                       transition-transform duration-200 translate-x-0"></span>
+        </button>
+      </div>
+
+      <!-- Shipping weight -->
+      <div class="flex items-center justify-between py-5">
+        <p class="text-[14px] font-semibold text-gray-900">Shipping weight</p>
+        <div class="flex items-stretch border border-gray-300 rounded-lg overflow-hidden" style="width:180px">
+          <input type="number" value="0.00" step="0.01" min="0"
+                 class="flex-1 px-3 py-2 text-sm text-gray-800 bg-white outline-none text-right
+                        [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none
+                        [&::-webkit-inner-spin-button]:appearance-none"/>
+          <span class="px-3 flex items-center text-sm text-gray-500 bg-gray-50 border-l border-gray-300">lb</span>
+        </div>
+      </div>
+
+    </div><!-- /fulfill-body -->
+  </div>
+  <!-- ── /FULFILL ORDERS ─────────────────────────────────────────── -->
+
+
+  <!-- ── OPTIMIZE SEARCH AND SHARING ───────────────────────────── -->
+  <div class="mt-4 border border-gray-900 rounded-xl overflow-hidden">
+
+    <!-- Header row (inside the bordered card) -->
+    <div class="flex items-center justify-between px-5 py-4 cursor-pointer select-none bg-white"
+         onclick="toggleSection('optimize', this)">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center flex-shrink-0">
+          <!-- Megaphone icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-700" fill="none"
+               viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15
+                     M18 13a3 3 0 100-6
+                     M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0
+                     7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7
+                     a3.988 3.988 0 01-1.564-.317z"/>
+          </svg>
+        </div>
+        <span class="text-[17px] font-bold text-gray-900 tracking-tight">Optimize search and sharing</span>
+      </div>
+      <!-- Chevron — starts pointing UP (section open) -->
+      <svg id="optimize-chevron" xmlns="http://www.w3.org/2000/svg"
+           class="w-5 h-5 text-gray-600 transition-transform duration-200"
+           fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/>
+      </svg>
+    </div>
+
+    <!-- Collapsible body -->
+    <div id="optimize-body">
+
+      <!-- SEO -->
+      <div class="flex items-start justify-between px-5 py-5 border-t border-gray-200">
+        <div>
+          <p class="text-[14px] font-semibold text-gray-900">Search engine optimization (SEO)</p>
+          <p class="text-[13px] text-gray-500 mt-0.5">Customize how this item is displayed on search engines.</p>
+        </div>
+        <button class="text-[13px] font-semibold text-gray-900 underline underline-offset-2
+                       hover:opacity-60 transition-opacity flex-shrink-0 ml-8">Edit</button>
+      </div>
+
+      <!-- Social media links -->
+      <div class="flex items-start justify-between px-5 py-5 border-t border-gray-200">
+        <div>
+          <p class="text-[14px] font-semibold text-gray-900">Social media links</p>
+          <p class="text-[13px] text-gray-500 mt-0.5">Customize how this item is displayed in links shared on social media.</p>
+        </div>
+        <button class="text-[13px] font-semibold text-gray-900 underline underline-offset-2
+                       hover:opacity-60 transition-opacity flex-shrink-0 ml-8">Edit</button>
+      </div>
+
+      <!-- bottom breathing room -->
+      <div class="h-4"></div>
+
+    </div><!-- /optimize-body -->
+  </div>
+  <!-- ── /OPTIMIZE SEARCH AND SHARING ──────────────────────────── -->
+
+</div>
+
+
+<!-- ── Scripts (add once per page / move to your JS file) ──────── -->
+<script>
+  function toggleSection(id, headerEl) {
+    const body    = document.getElementById(id + '-body');
+    const chevron = document.getElementById(id + '-chevron');
+    const isOpen  = body.style.display !== 'none';
+    body.style.display    = isOpen ? 'none' : '';
+    chevron.style.transform = isOpen ? 'rotate(180deg)' : '';
+  }
+
+  function toggleSwitch(btnId, dotId) {
+    const btn = document.getElementById(btnId);
+    const dot = document.getElementById(dotId);
+    const on  = btn.getAttribute('aria-checked') === 'true';
+    btn.setAttribute('aria-checked', String(!on));
+    // colour
+    btn.classList.toggle('bg-gray-300',  on);
+    btn.classList.toggle('bg-gray-600', !on);
+    // thumb position
+    dot.classList.toggle('translate-x-0',  on);
+    dot.classList.toggle('translate-x-6', !on);
+  }
+</script>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
