@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        
+        /* Dropdown menu styles */
+        .dropdown-menu {
+            max-height: 320px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 antialiased">
+    <div class="min-h-screen p-4 md:p-6 lg:p-8">
+        <!-- Info Banner -->
+        <div class="bg-gray-100 border border-gray-300 rounded-lg p-4 mb-6 flex items-start justify-between gap-4">
+            <div class="flex items-start gap-3 flex-1">
+                <svg class="w-5 h-5 text-gray-700 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+                </svg>
+                <div class="flex-1">
+                    <p class="text-sm text-gray-800">
+                        <span class="font-semibold">Already have items?</span>
+                        <span class="ml-1">Upload an existing item catalog to get started.</span>
+                    </p>
+                </div>
+            </div>
+            <div class="flex items-center gap-3 flex-shrink-0">
+                <button class="text-sm font-semibold text-gray-900 hover:text-gray-700 underline whitespace-nowrap">
+                    Import library
+                </button>
+                <button class="text-gray-500 hover:text-gray-700">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Content Card -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+            <!-- Header with Search and Actions -->
+            <div class="p-4 md:p-6 border-b border-gray-200">
+                <div class="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
+                    <!-- Left side - Search and Filters -->
+                    <div class="flex flex-col sm:flex-row gap-3 w-full lg:w-auto flex-1">
+                        <div class="relative flex-1 sm:flex-initial">
+                            <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                            </svg>
+                            <input type="text" placeholder="Search" class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent">
+                        </div>
+                        <button class="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 whitespace-nowrap">
+                            Category
+                        </button>
+                        <div class="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg">
+                            <span class="text-sm text-gray-600">Status</span>
+                            <span class="text-sm font-medium text-gray-900">Active</span>
+                        </div>
+                        <button class="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
+                            </svg>
+                            <span class="whitespace-nowrap">All filters</span>
+                        </button>
+                    </div>
+
+                    <!-- Right side - Action Buttons -->
+                    <div class="flex gap-3 w-full sm:w-auto">
+                        <button class="flex-1 sm:flex-initial px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 flex items-center justify-center gap-2">
+                            <span>Actions</span>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </button>
+                        <button class="flex-1 sm:flex-initial px-6 py-2 bg-black text-white rounded-lg text-sm font-semibold hover:bg-gray-800 whitespace-nowrap">
+                            Create item
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead class="bg-gray-50 border-b border-gray-200">
+                        <tr>
+                            <th class="w-12 px-10 py-3 text-left">
+                                <input type="checkbox" class="w-4 h-4 rounded border-gray-300 text-gray-900 focus:ring-gray-900">
+                            </th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Item</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Reporting category</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Status</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Price</th>
+                            <!-- <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">+</th> -->
+                            <th  class="w-12 px-4 py-3">
+                                <button>+</button></th>
+                            
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        <!-- Quick create row -->
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-4 py-4"></td>
+                            <td class="px-4 py-4" colspan="5">
+                                <button class="flex items-center gap-2 text-sm font-semibold text-gray-900 hover:text-gray-700">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                                    </svg>
+                                    <span class="underline">Quick create</span>
+                                </button>
+                            </td>
+                        </tr>
+
+                        <!-- Burger item -->
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-10 py-4">
+                                <input type="checkbox" class="w-4 h-4 rounded border-gray-300 text-gray-900 focus:ring-gray-900">
+                            </td>
+                            <td class="px-4 py-4 relative overflow-visible">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 bg-gray-100 rounded flex items-center justify-center flex-shrink-0">
+                                        <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                        </svg>
+                                    </div>
+                                    <span class="text-sm font-medium text-gray-900">Burger</span>
+                                </div>
+                            </td>
+                            <td class="px-4 py-4 text-sm text-gray-900"></td>
+                            <td class="px-4 py-4 relative overflow-visible">
+                                <button class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-pink-100 text-pink-800 hover:bg-pink-200" onclick="toggleStatusDropdown(event, 'burger')">
+                                    Sold out
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                    </svg>
+                                </button>
+                            </td>
+                            <td class="px-4 py-4 text-sm text-gray-900">Variable</td>
+                            <td class="px-4 py-4">
+                                <button class="text-gray-400 hover:text-gray-600" onclick="toggleMenu(event, 'burger')">
+                                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"/>
+                                    </svg>
+                                </button>
+                            </td>
+                        </tr>
+
+                        <!-- Latte item with variants (expanded) -->
+                        <tr class="hover:bg-gray-50 relative">
+                        
+                            <td class="px-10 py-4">
+                                <button class="text-black hover:text-gray-600 absolute left-3 top-6">
+                                        <svg class=" w-4 h-4 transform rotate-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                        </svg>
+                                    </button>
+                                <input type="checkbox" class="w-4 h-4 rounded border-gray-300 text-gray-900 focus:ring-gray-900">
+                            </td>
+                            
+                            <td class="px-4 py-4">
+                                
+                                <div class="flex items-center gap-3">
+                                    
+                                    
+                                    <div class="w-10 h-10 bg-gray-100 rounded flex items-center justify-center flex-shrink-0">
+                                        <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                        </svg>
+                                    </div>
+                                    <span class="text-sm font-medium text-gray-900">Latte</span>
+                                </div>
+                            </td>
+                            <td class="px-4 py-4 text-sm text-gray-900"></td>
+                            <td class="px-4 py-4">
+                                <button class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-pink-100 text-pink-800 hover:bg-pink-200" onclick="toggleStatusDropdown(event, 'latte')">
+                                    Sold out
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                    </svg>
+                                </button>
+                            </td>
+                            <td class="px-4 py-4 text-sm text-gray-900">$1.00</td>
+                            <td class="px-4 py-4 relative overflow-visible">
+                                <button class="text-gray-400 hover:text-gray-600" onclick="toggleMenu(event, 'latte')">
+                                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"/>
+                                    </svg>
+                                </button>
+                            </td>
+                        </tr>
+
+                        <!-- Latte variant: 12 oz -->
+                        <tr class="bg-gray-50 hover:bg-gray-100">
+                            <td class="px-4 py-3"></td>
+                            <td class="px-4 py-3">
+                                <div class="flex items-center gap-3 pl-7">
+                                    <div class="w-10 h-10 bg-white rounded flex items-center justify-center flex-shrink-0">
+                                        <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                        </svg>
+                                    </div>
+                                    <span class="text-sm text-gray-700">12 oz</span>
+                                </div>
+                            </td>
+                            <td class="px-4 py-3 text-sm text-gray-900"></td>
+                            <td class="px-4 py-3"></td>
+                            <td class="px-4 py-3 text-sm text-gray-700">$1.00</td>
+                            <td class="px-4 py-3"></td>
+                        </tr>
+
+                        <!-- Latte variant: 16 oz -->
+                        <tr class="bg-gray-50 hover:bg-gray-100">
+                            <td class="px-4 py-3"></td>
+                            <td class="px-4 py-3">
+                                <div class="flex items-center gap-3 pl-7">
+                                    <div class="w-10 h-10 bg-white rounded flex items-center justify-center flex-shrink-0">
+                                        <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                        </svg>
+                                    </div>
+                                    <span class="text-sm text-gray-700">16 oz</span>
+                                </div>
+                            </td>
+                            <td class="px-4 py-3 text-sm text-gray-900"></td>
+                            <td class="px-4 py-3"></td>
+                            <td class="px-4 py-3 text-sm text-gray-700">$1.00</td>
+                            <td class="px-4 py-3"></td>
+                        </tr>
+
+                        <!-- Pizza item -->
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-10 py-4">
+                                <input type="checkbox" class="w-4 h-4 rounded border-gray-300 text-gray-900 focus:ring-gray-900">
+                            </td>
+                            <td class="px-4 py-4 relative overflow-visible">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 bg-gray-100 rounded flex items-center justify-center flex-shrink-0">
+                                        <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                        </svg>
+                                    </div>
+                                    <span class="text-sm font-medium text-gray-900">Pizza</span>
+                                </div>
+                            </td>
+                            <td class="px-4 py-4 text-sm text-gray-900">Pizza</td>
+                            <td class="px-4 py-4"></td>
+                            <td class="px-4 py-4 text-sm text-gray-900">$100.00</td>
+                            <td class="px-4 py-4">
+                                <button class="text-gray-400 hover:text-gray-600" onclick="toggleMenu(event, 'pizza')">
+                                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"/>
+                                    </svg>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Status Dropdown Modal -->
+        <div id="statusDropdown" class="hidden fixed inset-0 z-50" onclick="closeStatusDropdown(event)">
+            <div class="absolute bg-white rounded-lg shadow-2xl border border-gray-200 p-6 w-80" style="top: 35%; left: 50%; transform: translate(-50%, -50%);" onclick="event.stopPropagation()">
+                <div class="space-y-4">
+                    <!-- Status toggle buttons -->
+                    <div class="flex gap-2">
+                        <button class="flex-1 px-4 py-2 rounded-lg text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200">
+                            Available
+                        </button>
+                        <button class="flex-1 px-4 py-2 rounded-lg text-sm font-medium text-red-700 bg-gray-100 hover:bg-gray-200">
+                            Sold out
+                        </button>
+                    </div>
+
+                    <!-- Reset option -->
+                    <div class="flex items-center justify-between py-2 border-t border-gray-200">
+                        <div class="flex items-center gap-2">
+                            <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <span class="text-sm font-medium text-gray-900">Reset</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs text-gray-500">Off</span>
+                            <button class="w-10 h-6 bg-gray-200 rounded-full relative">
+                                <div class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full shadow transform transition-transform"></div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Action buttons -->
+                    <div class="flex gap-3 pt-2">
+                        <button class="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50" onclick="closeStatusDropdown()">
+                            Cancel
+                        </button>
+                        <button class="flex-1 px-4 py-2 bg-black text-white rounded-lg text-sm font-semibold hover:bg-gray-800" onclick="closeStatusDropdown()">
+                            Apply
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Context Menu - Burger -->
+        <div id="contextMenu-burger" class="hidden absolute top-30 right-0 mt-2 z-50">
+            <div class="bg-white rounded-lg shadow-lg border border-gray-200 w-64 dropdown-menu" onclick="event.stopPropagation()">
+                <div class="py-1">
+                    <button class="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center justify-between">
+                        <span>Edit</span>
+                        <!-- <span class="text-gray-500">$1.00</span> -->
+                    </button>
+                    <button class="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center justify-between">
+                        <span>Duplicate</span>
+                        <!-- <span class="text-gray-500">$1.00</span> -->
+                    </button>
+                    <button class="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center justify-between">
+                        <span>Update sales channels</span>
+                        <!-- <span class="text-gray-500">$1.00</span> -->
+                    </button>
+                    <div class="border-t border-gray-200"></div>
+                    <button class="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gray-50">Update site visibility</button>
+                    <button class="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gray-50">Update online sale price</button>
+                    <button class="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gray-50">Update categories</button>
+                    <button class="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gray-50">Update fulfillment methods</button>
+                    <button class="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gray-50">Set as non-taxable</button>
+                    <div class="border-t border-gray-200"></div>
+                    <button class="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gray-50">Archive</button>
+                    <button class="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gray-50">Update low stock alert</button>
+                    <div class="border-t border-gray-200"></div>
+                    <button class="w-full px-4 py-2.5 text-left text-sm text-red-600 hover:bg-red-50">Delete</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Context Menu - Latte -->
+        <div id="contextMenu-latte" class="hidden absolute top-50 right-0 mt-2 z-50">
+            <div class="bg-white rounded-lg shadow-lg border border-gray-200 w-64 dropdown-menu" onclick="event.stopPropagation()">
+                <div class="py-1">
+                    <button class="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center justify-between">
+                        <span>Edit</span>
+                        <!-- <span class="text-gray-500">$1.00</span> -->
+                    </button>
+                    <button class="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center justify-between">
+                        <span>Duplicate</span>
+                        <!-- <span class="text-gray-500">$1.00</span> -->
+                    </button>
+                    <button class="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center justify-between">
+                        <span>Update sales channels</span>
+                        <!-- <span class="text-gray-500">$1.00</span> -->
+                    </button>
+                    <div class="border-t border-gray-200"></div>
+                    <button class="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gray-50">Update site visibility</button>
+                    <button class="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gray-50">Update online sale price</button>
+                    <button class="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gray-50">Update categories</button>
+                    <button class="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gray-50">Update fulfillment methods</button>
+                    <button class="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gray-50">Set as non-taxable</button>
+                    <div class="border-t border-gray-200"></div>
+                    <button class="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gray-50">Archive</button>
+                    <button class="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gray-50">Update low stock alert</button>
+                    <div class="border-t border-gray-200"></div>
+                    <button class="w-full px-4 py-2.5 text-left text-sm text-red-600 hover:bg-red-50">Delete</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Context Menu - Pizza -->
+        <div id="contextMenu-pizza" class="hidden absolute top-60 right-0 mt-2 z-50">
+            <div class="bg-white rounded-lg shadow-lg border border-gray-200 w-64 dropdown-menu" onclick="event.stopPropagation()">
+                <div class="py-1">
+                    <button class="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center justify-between">
+                        <span>Edit</span>
+                        <!-- <span class="text-gray-500">$100.00</span> -->
+                    </button>
+                    <button class="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center justify-between">
+                        <span>Duplicate</span>
+                        <!-- <span class="text-gray-500">$100.00</span> -->
+                    </button>
+                    <button class="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center justify-between">
+                        <span>Update sales channels</span>
+                        <!-- <span class="text-gray-500">$100.00</span> -->
+                    </button>
+                    <div class="border-t border-gray-200"></div>
+                    <button class="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gray-50">Update site visibility</button>
+                    <button class="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gray-50">Update online sale price</button>
+                    <button class="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gray-50">Update categories</button>
+                    <button class="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gray-50">Update fulfillment methods</button>
+                    <button class="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gray-50">Set as non-taxable</button>
+                    <div class="border-t border-gray-200"></div>
+                    <button class="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gray-50">Archive</button>
+                    <button class="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gray-50">Update low stock alert</button>
+                    <div class="border-t border-gray-200"></div>
+                    <button class="w-full px-4 py-2.5 text-left text-sm text-red-600 hover:bg-red-50">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleStatusDropdown(event, itemName) {
+            event.stopPropagation();
+            const dropdown = document.getElementById('statusDropdown');
+            dropdown.classList.toggle('hidden');
+            closeAllMenus();
+        }
+
+        function closeStatusDropdown(event) {
+            if (event) event.stopPropagation();
+            document.getElementById('statusDropdown').classList.add('hidden');
+        }
+
+        function toggleMenu(event, itemName) {
+            event.stopPropagation();
+            closeAllMenus();
+            
+            const menu = document.getElementById('contextMenu-' + itemName);
+            const button = event.currentTarget;
+            const cell = button.closest('td');
+
+            if (!menu || !cell) return;
+
+            cell.appendChild(menu);
+            menu.classList.remove('hidden');
+            closeStatusDropdown();
+        }
+
+        function closeAllMenus() {
+            document.getElementById('contextMenu-burger').classList.add('hidden');
+            document.getElementById('contextMenu-latte').classList.add('hidden');
+            document.getElementById('contextMenu-pizza').classList.add('hidden');
+        }
+
+        // Close menus when clicking outside
+        document.addEventListener('click', function(event) {
+            closeAllMenus();
+            if (!event.target.closest('#statusDropdown')) {
+                closeStatusDropdown();
+            }
+        });
+        
+        // Prevent body scroll when dropdown is open
+        document.addEventListener('DOMContentLoaded', function() {
+            const dropdowns = document.querySelectorAll('.dropdown-menu');
+            dropdowns.forEach(dropdown => {
+                dropdown.addEventListener('wheel', function(e) {
+                    e.stopPropagation();
+                });
+            });
+        });
+    </script>
+</body>
+</html>
